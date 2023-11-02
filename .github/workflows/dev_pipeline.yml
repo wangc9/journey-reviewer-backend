@@ -1,0 +1,34 @@
+name: Development pipeline
+
+on:
+  push:
+    branches:
+      - main
+    pull_request:
+      branches: [main]
+      types: [opened, synchronize]
+
+jobs:
+  pre_deploy_pipeline:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install
+      - name: Run jest tests
+        run: npm test
+
+  version_change:
+    if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ', '), '#skip') }}
+    needs: pre_deploy_pipeline
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Change version tag
+        uses: anothrNick/github-tag-action@1.67.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
