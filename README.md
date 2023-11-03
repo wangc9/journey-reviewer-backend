@@ -79,6 +79,8 @@ This is the backend implementation of the journey reviewer web.
 * [![Node][Node.js]][Node-url]
 * [![MongoDB][MongoDB]][MongoDB-url]
 * [![Express][Express.js]][Express-url]
+* [![Prettier][Prettier]][Prettier-url]
+* [![Jest][Jest]][Jest-url]
 
 [//]: # (* [![Svelte][Svelte.dev]][Svelte-url])
 
@@ -204,3 +206,7 @@ Project Link: [https://github.com/wangc9/journey-reviewer-backend](https://githu
 [Bootstrap-url]: https://getbootstrap.com
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com 
+[Prettier]: https://img.shields.io/badge/prettier-1A2C34?style=for-the-badge&logo=prettier&logoColor=F7BA3E
+[Prettier-url]: https://prettier.io/
+[Jest]: https://img.shields.io/badge/Jest-323330?style=for-the-badge&logo=Jest&logoColor=white
+[Jest-url]: https://jestjs.io/
