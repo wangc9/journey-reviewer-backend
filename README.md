@@ -79,6 +79,7 @@ This is the backend implementation of the journey reviewer web.
 * [![Node][Node.js]][Node-url]
 * [![MongoDB][MongoDB]][MongoDB-url]
 * [![Express][Express.js]][Express-url]
+* [![Eslint][Eslint]][Eslint-url]
 * [![Prettier][Prettier]][Prettier-url]
 * [![Jest][Jest]][Jest-url]
 
@@ -198,6 +199,8 @@ Project Link: [https://github.com/wangc9/journey-reviewer-backend](https://githu
 [MongoDB-url]: https://www.mongodb.com/
 [Express.js]: https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB
 [Express-url]: https://expressjs.com/
+[Eslint]: https://img.shields.io/badge/eslint-3A33D1?style=for-the-badge&logo=eslint&logoColor=white
+[Eslint-url]: https://eslint.org/
 [Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
 [Svelte-url]: https://svelte.dev/
 [Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
