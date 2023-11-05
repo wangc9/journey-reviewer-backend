@@ -27,6 +27,8 @@ jobs:
     if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ', '), '#skip') }}
     needs: pre_deploy_pipeline
     runs-on: ubuntu-20.04
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Change version tag
@@ -34,4 +36,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
-          RELEASE_BRANCHES: main
