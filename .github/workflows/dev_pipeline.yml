@@ -19,6 +19,8 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run jest tests
+        env:
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
         run: npm test
 
   version_change:
