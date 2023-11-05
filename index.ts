@@ -1,19 +1,11 @@
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
+import app from './app';
 
 dotenv.config();
-mongoose.set('strictQuery', false);
 
-const mongoURL = process.env.MONGODB_URL;
-
-export async function run(url: string|undefined) {
-  if (typeof url === 'string') {
-    await mongoose.connect(url);
-    console.log('Mongoose connected');
-  } else {
-    throw new Error('MongoDB url is not provided');
-  }
-  mongoose.connection.close();
-}
-
-run(mongoURL).catch(err => console.log(err));
+// eslint-disable-next-line prefer-destructuring
+const PORT = process.env.PORT;
+app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
+  console.log(`Server running on port ${PORT}`);
+});
