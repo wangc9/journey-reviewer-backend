@@ -1,29 +1,10 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 
 interface IUser {
   username: String;
   stations?: [String];
   journeys?: [String];
-}
-
-dotenv.config();
-mongoose.set('strictQuery', false);
-const url = process.env.MONGODB_URL;
-if (typeof url === 'string') {
-  mongoose
-    .connect(url)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .then((_result) => {
-      // eslint-disable-next-line no-console
-      console.log('Connected to MongoDB');
-    })
-    .catch((error) => {
-      // eslint-disable-next-line no-console
-      console.log(`Error when connecting to MongoDB: ${error.message}`);
-    });
-} else {
-  throw new Error('MongoDB url is not valid');
+  uid: String;
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -43,6 +24,10 @@ const userSchema = new mongoose.Schema<IUser>({
       ref: 'Journey',
     },
   ],
+  uid: {
+    type: String,
+    required: true,
+  },
 });
 
 userSchema.set('toJSON', {

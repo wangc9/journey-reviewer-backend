@@ -79,6 +79,7 @@ This is the backend implementation of the journey reviewer web.
 * [![Node][Node.js]][Node-url]
 * [![MongoDB][MongoDB]][MongoDB-url]
 * [![Express][Express.js]][Express-url]
+* [![Firebase][Firebase]][Firebase-url]
 * [![Eslint][Eslint]][Eslint-url]
 * [![Prettier][Prettier]][Prettier-url]
 * [![Jest][Jest]][Jest-url]
@@ -119,14 +120,14 @@ git clone https://github.com/wangc9/journey-reviewer-backend.git
 2. This backend connects to a MongoDB database for retriving data.
 Create a `.env` file in the root directory and define the connection
 url to the database `MONGODB_URL=`. For security reasons, the url is
-not published in the repo. Please contact the author for futher
+not published in the repo. Please contact the <a href="#contact">author</a> for futher
 information.
 
 3. Run the project with
    ```sh
    npm start
    ```
-4. This project follows the Test-driven Development (TDD) practice.
+4. This project follows the Test-driven Development ([TDD](http://www.butunclebob.com/ArticleS.UncleBob.TheThreeRulesOfTdd)) practice.
 To run all the tests for this project, use
    ```sh
    npm run test
@@ -199,6 +200,8 @@ Project Link: [https://github.com/wangc9/journey-reviewer-backend](https://githu
 [MongoDB-url]: https://www.mongodb.com/
 [Express.js]: https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB
 [Express-url]: https://expressjs.com/
+[Firebase]: https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase
+[Firebase-url]: https://firebase.google.com/
 [Eslint]: https://img.shields.io/badge/eslint-3A33D1?style=for-the-badge&logo=eslint&logoColor=white
 [Eslint-url]: https://eslint.org/
 [Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00

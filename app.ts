@@ -1,29 +1,35 @@
 import express from 'express';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import cors from 'cors';
-import User from './src/models/user';
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import userRouter from './src/controllers/users';
+import loginRouter from './src/controllers/login';
 
 const app = express();
+
+dotenv.config();
+mongoose.set('strictQuery', false);
+const url = process.env.MONGODB_URL;
+if (typeof url === 'string') {
+  mongoose
+    .connect(url)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .then((_result) => {
+      // eslint-disable-next-line no-console
+      console.log('Connected to MongoDB');
+    })
+    .catch((error) => {
+      // eslint-disable-next-line no-console
+      console.log(`Error when connecting to MongoDB: ${error.message}`);
+    });
+} else {
+  throw new Error('MongoDB url is not valid');
+}
+
 app.use(cors());
 app.use(express.json());
-
-app.get('/api/users', (_request, response) => {
-  User.find({}).then((users) => {
-    response.json(users);
-  });
-});
-
-app.post('/api/users', (request, response) => {
-  const { username } = request.body;
-
-  const user = new User({
-    username,
-  });
-
-  // @ts-ignore
-  user.save().then((savedUser: any) => {
-    response.status(201).json(savedUser);
-  });
-});
+app.use('/api/users', userRouter);
+app.use('/api/login', loginRouter);
 
 export default app;
