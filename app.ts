@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import userRouter from './src/controllers/users';
 import loginRouter from './src/controllers/login';
+import stationsRouter from './src/controllers/stations';
 
 const app = express();
 
@@ -31,5 +32,6 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/users', userRouter);
 app.use('/api/login', loginRouter);
+app.use('/api/stations', stationsRouter);
 
 export default app;
