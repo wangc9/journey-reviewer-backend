@@ -10,6 +10,7 @@ on:
 
 jobs:
   pre_deploy_pipeline:
+    if: ${{ !contains(join(github.event.commits.*.message, ', '), '#doc') }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
