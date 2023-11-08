@@ -48,9 +48,9 @@ describe('Test user database logic', () => {
     const usernames = users.map((user) => user.username);
     expect(usernames).toContain(`test${time}`);
   });
+});
 
-  afterAll((done) => {
-    mongoose.connection.close();
-    done();
-  });
+afterAll((done) => {
+  mongoose.connection.close();
+  done();
 });
