@@ -1,13 +1,17 @@
-import mongoose from 'mongoose';
+import mongoose, { Document, Model } from 'mongoose';
 
-interface IUser {
+export interface IUser {
   username: String;
   stations?: [String];
   journeys?: [String];
   uid: String;
 }
 
-const userSchema = new mongoose.Schema<IUser>({
+export interface IUserDocument extends IUser, Document {}
+
+export interface IUserModel extends Model<IUserDocument> {}
+
+const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -35,12 +39,10 @@ userSchema.set('toJSON', {
     // eslint-disable-next-line no-param-reassign,no-underscore-dangle
     returnedObject.id = returnedObject._id.toString();
     // eslint-disable-next-line no-param-reassign,no-underscore-dangle
-    delete returnedObject._id;
-    // eslint-disable-next-line no-param-reassign,no-underscore-dangle
     delete returnedObject.__v;
   },
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model<IUserDocument>('User', userSchema);
 
 export default User;

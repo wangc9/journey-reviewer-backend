@@ -10,8 +10,6 @@ loginRouter.post('/', async (request, response) => {
   const { token } = request.body;
   const decodedToken = await auth(firebaseAdmin).verifyIdToken(token);
   const { uid } = decodedToken;
-  // eslint-disable-next-line no-console
-  console.log(uid);
   const user = await User.findOne({ uid });
   response.json({ user });
 });
