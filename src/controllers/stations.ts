@@ -7,11 +7,19 @@ import User from '../models/user';
 
 const stationsRouter = express.Router();
 
+/**
+ * returns all stations from database
+ */
 stationsRouter.get('/', async (_request, response) => {
   const stations = await Station.find({});
   response.json({ stations });
 });
 
+/**
+ * receive token from firebase, decode and create new station, return new station
+ * request: { username, token }
+ * response: { updatedUser, station }
+ */
 stationsRouter.post('/', async (request, response) => {
   const { token, ...body } = request.body;
   if (token === undefined) {
@@ -30,7 +38,7 @@ stationsRouter.post('/', async (request, response) => {
       const user = await User.findOne({ uid });
       if (user === null) {
         response.status(401).json({
-          error: 'Invalid user',
+          error: 'User not found',
         });
       } else {
         const newStation = new Station({
@@ -39,7 +47,11 @@ stationsRouter.post('/', async (request, response) => {
           user: user._id,
         });
         const station = await newStation.save();
-        response.status(201).json({ station });
+        // @ts-ignore
+        // eslint-disable-next-line no-underscore-dangle
+        user.stations = user.stations.concat(station._id);
+        const updatedUser = await user.save();
+        response.status(201).json({ updatedUser, station });
       }
     }
   }

@@ -1,4 +1,11 @@
 # Changelog
+Note: "*" indicates that the commit link is a placeholder. The corresponding link will be updated in the next commit.
+
+## v0.3.3
+
+### Bug Fixes
+
+- [``](https://github.com/wangc9/journey-reviewer-backend/commit/f9b69b0593027f693df5792dbe37fd179585434a) `Stations` list in User now add the newly added station when logged-in user create new station*
 
 ## v0.3.2
 
@@ -7,7 +14,7 @@
 
 ### Documentation
 
-- [``](https://github.com/wangc9/journey-reviewer-backend/commit/42581778fb4ff00561c41906e61ef3cc1cb24fd8) Add changelog for all previous versions
+- [`bed1fc7`](https://github.com/wangc9/journey-reviewer-backend/commit/bed1fc72ef0704427010c3029e63fbef03262efd) Add changelog for all previous versions
 
 
 ## v0.3.1

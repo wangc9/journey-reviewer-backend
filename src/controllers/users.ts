@@ -16,6 +16,8 @@ userRouter.get('/', async (_request, response) => {
 
 /**
  * receive token from firebase, decode and create new user, return new user
+ * request: { username, token }
+ * response: { user }
  */
 userRouter.post('/', async (request, response) => {
   const { username, token } = request.body;

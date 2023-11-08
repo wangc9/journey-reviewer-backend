@@ -59,6 +59,7 @@ describe('Test station database logic', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
     expect(result.body.station.SId).toBe(time);
+    expect(result.body.updatedUser.stations).toContain(result.body.station.id);
   });
 });
 
