@@ -2,10 +2,11 @@
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import supertest from 'supertest';
-import { afterAll, describe, expect, test } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
 import mongoose from 'mongoose';
 import firebaseClient from '../config/firebase_client_config';
 import app from '../../app';
+import Station from '../models/station';
 
 const api = supertest(app);
 
@@ -31,9 +32,14 @@ describe('Test station without login', () => {
 });
 
 describe('Test station database logic', () => {
-  test('Add station successful with correct credientials', async () => {
+  let time: number;
+
+  beforeAll(() => {
     const date = new Date();
-    const time = date.getTime();
+    time = date.getTime();
+  });
+
+  test('Add station successful with correct credientials', async () => {
     const testStation = {
       SId: time,
       Nimi: 'test s',
@@ -60,6 +66,25 @@ describe('Test station database logic', () => {
       .expect('Content-Type', /application\/json/);
     expect(result.body.station.SId).toBe(time);
     expect(result.body.updatedUser.stations).toContain(result.body.station.id);
+  });
+
+  test('Station can be updated', async () => {
+    await signInWithEmailAndPassword(
+      auth,
+      'test1699277335156@test.com',
+      'qwerty123',
+    );
+    const token = await auth.currentUser?.getIdToken(true);
+    const station = await Station.findOne({ SId: time });
+    if (station) {
+      const result = await api
+        // eslint-disable-next-line no-underscore-dangle
+        .put(`/api/stations/${station._id}`)
+        .send({ Nimi: 'testi s', token })
+        .expect(201)
+        .expect('Content-Type', /application\/json/);
+      expect(result.body.newStation.Nimi).toBe('testi s');
+    }
   });
 });
 

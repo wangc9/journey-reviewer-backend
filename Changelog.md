@@ -1,11 +1,18 @@
 # Changelog
 Note: "*" indicates that the commit link is a placeholder. The corresponding link will be updated in the next commit.
 
+
+## v0.3.4
+
+### Features
+- [``](https://github.com/wangc9/journey-reviewer-backend/commit/6a586df286e524cd205bb975beeb52d191501b8c) Stations' information can be changed using `stationsRouter`*
+
+
 ## v0.3.3
 
 ### Bug Fixes
 
-- [``](https://github.com/wangc9/journey-reviewer-backend/commit/f9b69b0593027f693df5792dbe37fd179585434a) `Stations` list in User now add the newly added station when logged-in user create new station*
+- [`ec1973f`](https://github.com/wangc9/journey-reviewer-backend/commit/ec1973f4155cb42a9efd0f76edb5e82faba84986) `Stations` list in User now add the newly added station when logged-in user create new station*
 
 ## v0.3.2
 
