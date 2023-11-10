@@ -68,6 +68,34 @@ describe('Test station database logic', () => {
     expect(result.body.updatedUser.stations).toContain(result.body.station.id);
   });
 
+  test('Can not add station with existing SId', async () => {
+    const testStation = {
+      SId: time,
+      Nimi: 'test r',
+      Namn: 'test r',
+      Name: 'test r',
+      Osoite: 'test r',
+      Adress: 'test r',
+      Kaupunki: 'Helsinki',
+      Stad: 'Helsingfors',
+      Capacity: 1,
+      x: 60.000001,
+      y: 52.511112,
+    };
+    await signInWithEmailAndPassword(
+      auth,
+      'test1699277335156@test.com',
+      'qwerty123',
+    );
+    const token = await auth.currentUser?.getIdToken(true);
+    const result = await api
+      .post('/api/stations')
+      .send({ ...testStation, token })
+      .expect(401)
+      .expect('Content-Type', /application\/json/);
+    expect(result.body.error).toContain('expected `SId` to be unique');
+  });
+
   test('Station can be updated', async () => {
     await signInWithEmailAndPassword(
       auth,

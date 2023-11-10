@@ -41,17 +41,23 @@ stationsRouter.post('/', async (request, response) => {
           error: 'User not found',
         });
       } else {
-        const newStation = new Station({
-          ...body,
+        try {
+          const newStation = new Station({
+            ...body,
+            // eslint-disable-next-line no-underscore-dangle
+            user: user._id,
+          });
+          const station = await newStation.save();
+          // @ts-ignore
           // eslint-disable-next-line no-underscore-dangle
-          user: user._id,
-        });
-        const station = await newStation.save();
-        // @ts-ignore
-        // eslint-disable-next-line no-underscore-dangle
-        user.stations = user.stations.concat(station._id);
-        const updatedUser = await user.save();
-        response.status(201).json({ updatedUser, station });
+          user.stations = user.stations.concat(station._id);
+          const updatedUser = await user.save();
+          response.status(201).json({ updatedUser, station });
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            response.status(401).json({ error: error.message });
+          }
+        }
       }
     }
   }
