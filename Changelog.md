@@ -5,14 +5,14 @@ Note: "*" indicates that the commit link is a placeholder. The corresponding lin
 ## v0.4.0
 
 ### Features
-- [``](https://github.com/wangc9/journey-reviewer-backend/commit/3016961fc267910b5230257b3bcc7e0a063c3d39) Add journey handling*
+- [`a9a61f4`](https://github.com/wangc9/journey-reviewer-backend/commit/a9a61f41bd1aa2523b7c93fd1aa00cbbe0595bcd) Add journey handling
   - Add `Journey` Schema for journey storage
   - Add `journeysRouter` for journey handling
   - Change `Station` Schema to record arrival and departure journeys, destination count, and departure count
 
 ### Bug Fixes
 
-- [``](https://github.com/wangc9/journey-reviewer-backend/commit/480b19024bc7d2e1434b29e9b859f580746f1f2e) Fix type error*
+- [`a9a61f4`](https://github.com/wangc9/journey-reviewer-backend/commit/a9a61f41bd1aa2523b7c93fd1aa00cbbe0595bcd) Fix type error
   - Fix type error in `IUser`, `IStation`
   - Add type check for express routers
 
