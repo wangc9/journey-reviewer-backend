@@ -1,15 +1,15 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { auth } from 'firebase-admin';
 import User from '../models/user';
-import firebaseAdmin from '../config/firebase_admin_config';
+import firebaseAdmin from '../utils/firebase_admin_config';
 
 const userRouter = express.Router();
 
 /**
  * returns all users from database
  */
-userRouter.get('/', async (_request, response) => {
+userRouter.get('/', async (_request: Request, response: Response) => {
   const users = await User.find({});
   response.json(users);
 });
@@ -19,7 +19,7 @@ userRouter.get('/', async (_request, response) => {
  * request: { username, token }
  * response: { user }
  */
-userRouter.post('/', async (request, response) => {
+userRouter.post('/', async (request: Request, response: Response) => {
   const { username, token } = request.body;
   const decodedToken = await auth(firebaseAdmin).verifyIdToken(token);
   // eslint-disable-next-line prefer-destructuring

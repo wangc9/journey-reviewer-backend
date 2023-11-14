@@ -1,7 +1,7 @@
 import express from 'express';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { auth } from 'firebase-admin';
-import firebaseAdmin from '../config/firebase_admin_config';
+import firebaseAdmin from '../utils/firebase_admin_config';
 import User from '../models/user';
 
 const loginRouter = express.Router();

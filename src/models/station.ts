@@ -3,19 +3,21 @@ import mongoose, { Document, Model } from 'mongoose';
 import mongooseUniqueValidator from 'mongoose-unique-validator';
 
 interface IStation {
-  SId: Number;
-  Nimi: String;
-  Namn: String;
-  Name: String;
-  Osoite: String;
-  Adress: String;
+  SId: number;
+  Nimi: string;
+  Namn: string;
+  Name: string;
+  Osoite: string;
+  Adress: string;
   Kaupunki: 'Helsinki' | 'Espoo';
   Stad: 'Helsingfors' | 'Esbo';
-  Capacity: Number;
-  x: Number;
-  y: Number;
-  journeys: Array<mongoose.Schema.Types.ObjectId>;
-  user: mongoose.Schema.Types.ObjectId;
+  Capacity: number;
+  x: number;
+  y: number;
+  journeys: mongoose.Types.Map<Array<mongoose.Types.ObjectId>>;
+  destination: mongoose.Types.Map<number>;
+  departure: mongoose.Types.Map<number>;
+  user: mongoose.Types.ObjectId;
 }
 
 export interface IStationDocument extends IStation, Document {}
@@ -70,12 +72,26 @@ const stationSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  journeys: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Journey',
-    },
-  ],
+  journeys: {
+    type: Map,
+    of: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Journey',
+      },
+    ],
+    default: { arrive: [], depart: [] }, // depart: journeys start at the station
+  },
+  departure: {
+    type: mongoose.Schema.Types.Map,
+    of: Number,
+    default: {},
+  }, // for journeys end at the station
+  destination: {
+    type: mongoose.Schema.Types.Map,
+    of: Number,
+    default: {},
+  }, // for journeys start at the station
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

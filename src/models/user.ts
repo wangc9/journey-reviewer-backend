@@ -1,10 +1,10 @@
 import mongoose, { Document, Model } from 'mongoose';
 
 export interface IUser {
-  username: String;
-  stations?: [String];
-  journeys?: [String];
-  uid: String;
+  username: string;
+  stations: Array<mongoose.Types.ObjectId>;
+  journeys: Array<mongoose.Types.ObjectId>;
+  uid: string;
 }
 
 export interface IUserDocument extends IUser, Document {}

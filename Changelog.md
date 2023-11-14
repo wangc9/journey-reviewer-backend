@@ -2,11 +2,26 @@
 Note: "*" indicates that the commit link is a placeholder. The corresponding link will be updated in the next commit.
 
 
+## v0.4.0
+
+### Features
+- [``](https://github.com/wangc9/journey-reviewer-backend/commit/3016961fc267910b5230257b3bcc7e0a063c3d39) Add journey handling*
+  - Add `Journey` Schema for journey storage
+  - Add `journeysRouter` for journey handling
+  - Change `Station` Schema to record arrival and departure journeys, destination count, and departure count
+
+### Bug Fixes
+
+- [``](https://github.com/wangc9/journey-reviewer-backend/commit/480b19024bc7d2e1434b29e9b859f580746f1f2e) Fix type error*
+  - Fix type error in `IUser`, `IStation`
+  - Add type check for express routers
+
+
 ## v0.3.5
 
 ### Bug Fixes
 
-- [``](https://github.com/wangc9/journey-reviewer-backend/commit/ec1973f4155cb42a9efd0f76edb5e82faba84986) Add error handling for registering station with used SId*
+- [`480b190`](https://github.com/wangc9/journey-reviewer-backend/commit/480b19024bc7d2e1434b29e9b859f580746f1f2e) Add error handling for registering station with used SId
 
 
 ## v0.3.4

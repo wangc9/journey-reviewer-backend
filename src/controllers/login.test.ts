@@ -4,7 +4,7 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import supertest from 'supertest';
 import { afterAll, describe, expect, test } from '@jest/globals';
 import mongoose from 'mongoose';
-import firebaseClient from '../config/firebase_client_config';
+import firebaseClient from '../utils/firebase_client_config';
 import app from '../../app';
 
 const api = supertest(app);

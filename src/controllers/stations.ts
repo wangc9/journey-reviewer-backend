@@ -1,7 +1,7 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 
 import { auth } from 'firebase-admin';
-import firebaseAdmin from '../config/firebase_admin_config';
+import firebaseAdmin from '../utils/firebase_admin_config';
 import Station from '../models/station';
 import User from '../models/user';
 
@@ -10,7 +10,7 @@ const stationsRouter = express.Router();
 /**
  * returns all stations from database
  */
-stationsRouter.get('/', async (_request, response) => {
+stationsRouter.get('/', async (_request: Request, response: Response) => {
   const stations = await Station.find({});
   response.json({ stations });
 });
@@ -20,7 +20,7 @@ stationsRouter.get('/', async (_request, response) => {
  * request: { stationBody, token }
  * response: { updatedUser, station }
  */
-stationsRouter.post('/', async (request, response) => {
+stationsRouter.post('/', async (request: Request, response: Response) => {
   const { token, ...body } = request.body;
   if (token === undefined) {
     response.status(401).json({
@@ -68,7 +68,7 @@ stationsRouter.post('/', async (request, response) => {
  * request: { stationBody, token }
  * response: { newStation }
  */
-stationsRouter.put('/:id', async (request, response) => {
+stationsRouter.put('/:id', async (request: Request, response: Response) => {
   const { token, ...body } = request.body;
   if (token === undefined) {
     response.status(401).json({
