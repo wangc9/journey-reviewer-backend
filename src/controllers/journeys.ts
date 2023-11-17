@@ -1,11 +1,9 @@
 import express, { Request, Response } from 'express';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import 'express-async-errors';
-import { auth } from 'firebase-admin';
-import firebaseAdmin from '../utils/firebase_admin_config';
-import User from '../models/user';
 import Journey from '../models/journey';
 import { checkDuration, updateStation } from '../services/journey-service';
+import { checkToken } from '../services/util-service';
 
 const journeysRouter = express.Router();
 
@@ -33,25 +31,12 @@ journeysRouter.get('/:id', async (request: Request, response: Response) => {
  * response: { journey, updatedUser, newDepart, newDestin }
  */
 journeysRouter.post('/', async (request: Request, response: Response) => {
-  const { token, ...body } = request.body;
-  if (token === undefined) {
-    return response.status(401).json({
-      error:
-        'Only logged-in users can add journeys, please log in or sign up first',
-    });
+  const { body, user, authError } = await checkToken(request);
+  if (authError) {
+    return response.status(401).json({ error: authError });
   }
-  const decodedToken = await auth(firebaseAdmin).verifyIdToken(token);
-  if (!decodedToken) {
-    return response.status(401).json({
-      error: 'Invalid user',
-    });
-  }
-  const { uid } = decodedToken;
-  const user = await User.findOne({ uid });
-  if (user === null) {
-    return response.status(401).json({
-      error: 'User not found',
-    });
+  if (user === undefined) {
+    return response.status(400).json({ error: 'Wrong logic in checkToken' });
   }
   const duration = checkDuration({
     startTime: body.startTime,

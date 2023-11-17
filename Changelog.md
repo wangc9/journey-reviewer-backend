@@ -2,6 +2,21 @@
 Note: "*" indicates that the commit link is a placeholder. The corresponding link will be updated in the next commit.
 
 
+## v0.4.2
+
+### Chores
+- [``](https://github.com/wangc9/journey-reviewer-backend/commit/a9a61f41bd1aa2523b7c93fd1aa00cbbe0595bcd) Move token checking during all actions with `Journey` and `Station` to a new service `checkToken` in`util-service`*
+
+
+## v0.4.1
+
+### Chores
+- [`2d081e8`](https://github.com/wangc9/journey-reviewer-backend/commit/2d081e8c73d57d086685f19d924405e631dd1d32) Move station update during journey creations to a new service `updateStation` in `journey-service`
+
+### Bug Fixes
+- [`2d081e8`](https://github.com/wangc9/journey-reviewer-backend/commit/2d081e8c73d57d086685f19d924405e631dd1d32) Change name of return station id `return` in `Journey` Schema to `returnID`
+
+
 ## v0.4.0
 
 ### Features

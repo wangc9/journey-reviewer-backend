@@ -1,9 +1,6 @@
 import express, { Request, Response } from 'express';
-
-import { auth } from 'firebase-admin';
-import firebaseAdmin from '../utils/firebase_admin_config';
+import { checkToken } from '../services/util-service';
 import Station from '../models/station';
-import User from '../models/user';
 
 const stationsRouter = express.Router();
 
@@ -21,45 +18,34 @@ stationsRouter.get('/', async (_request: Request, response: Response) => {
  * response: { updatedUser, station }
  */
 stationsRouter.post('/', async (request: Request, response: Response) => {
-  const { token, ...body } = request.body;
-  if (token === undefined) {
-    response.status(401).json({
-      error:
-        'Only logged-in users can add stations, please log in or sign up first',
-    });
-  } else {
-    const decodedToken = await auth(firebaseAdmin).verifyIdToken(token);
-    if (!decodedToken) {
-      response.status(401).json({
-        error: 'Invalid user',
-      });
-    } else {
-      const { uid } = decodedToken;
-      const user = await User.findOne({ uid });
-      if (user === null) {
-        response.status(401).json({
-          error: 'User not found',
-        });
-      } else {
-        try {
-          const newStation = new Station({
-            ...body,
-            // eslint-disable-next-line no-underscore-dangle
-            user: user._id,
-          });
-          const station = await newStation.save();
-          // @ts-ignore
-          // eslint-disable-next-line no-underscore-dangle
-          user.stations = user.stations.concat(station._id);
-          const updatedUser = await user.save();
-          response.status(201).json({ updatedUser, station });
-        } catch (error: unknown) {
-          if (error instanceof Error) {
-            response.status(401).json({ error: error.message });
-          }
-        }
-      }
+  const { body, user, authError } = await checkToken(request);
+  if (authError) {
+    return response.status(401).json({ error: authError });
+  }
+  if (user === undefined) {
+    return response.status(400).json({ error: 'Wrong logic in checkToken' });
+  }
+
+  const newStation = new Station({
+    ...body,
+    // eslint-disable-next-line no-underscore-dangle
+    user: user._id,
+  });
+  try {
+    const station = await newStation.save();
+    // eslint-disable-next-line no-underscore-dangle
+    user.stations = user.stations.concat(station._id);
+    const updatedUser = await user.save();
+    return response.status(201).json({ updatedUser, station });
+  } catch (error) {
+    if (error instanceof Error) {
+      return response.status(401).json({ error: error.message });
     }
+    return response
+      .status(400)
+      .json({
+        error: 'A logic error occuered when posting through stationsRouter',
+      });
   }
 });
 
@@ -69,35 +55,19 @@ stationsRouter.post('/', async (request: Request, response: Response) => {
  * response: { newStation }
  */
 stationsRouter.put('/:id', async (request: Request, response: Response) => {
-  const { token, ...body } = request.body;
-  if (token === undefined) {
-    response.status(401).json({
-      error:
-        'Only logged-in users can add stations, please log in or sign up first',
-    });
-  } else {
-    const decodedToken = await auth(firebaseAdmin).verifyIdToken(token);
-    if (!decodedToken) {
-      response.status(401).json({
-        error: 'Invalid user',
-      });
-    } else {
-      const { uid } = decodedToken;
-      const user = await User.findOne({ uid });
-      if (user === null) {
-        response.status(401).json({
-          error: 'User not found',
-        });
-      } else {
-        const newStation = await Station.findByIdAndUpdate(
-          request.params.id,
-          { ...body },
-          { new: true },
-        );
-        response.status(201).json({ newStation });
-      }
-    }
+  const { body, user, authError } = await checkToken(request);
+  if (authError) {
+    return response.status(401).json({ error: authError });
   }
+  if (user === undefined) {
+    return response.status(400).json({ error: 'Wrong logic in checkToken' });
+  }
+  const newStation = await Station.findByIdAndUpdate(
+    request.params.id,
+    { ...body },
+    { new: true },
+  );
+  return response.status(201).json({ newStation });
 });
 
 export default stationsRouter;
