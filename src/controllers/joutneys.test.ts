@@ -24,8 +24,8 @@ describe('Test journey without login', () => {
     const testJourney: Omit<IJourney, 'user'> = {
       startTime: '2023-11-09T11:48:00',
       endTime: '2023-11-09T11:50:00',
-      departure: 1699613764084,
-      return: 1699607640654,
+      departure: 1700209396660,
+      returnID: 1700209425434,
       distance: 25,
     };
     await api.post('/api/journeys').send(testJourney).expect(401);
@@ -47,8 +47,8 @@ describe('Test journey database logic', () => {
     const testJourney: Omit<IJourney, 'user'> = {
       startTime: time,
       endTime,
-      departure: 1699959483558,
-      return: 1699959493470,
+      departure: 1700209396660,
+      returnID: 1700209425434,
       distance: 25,
     };
     await signInWithEmailAndPassword(

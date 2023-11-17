@@ -4,7 +4,7 @@ export interface IJourney {
   startTime: string;
   endTime: string;
   departure: number;
-  return: number;
+  returnID: number;
   distance: number;
   duration?: number;
   user: mongoose.Types.ObjectId;
@@ -27,7 +27,7 @@ const journeySchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  return: {
+  returnID: {
     type: Number,
     required: true,
   },
