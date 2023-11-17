@@ -4,12 +4,11 @@ import { auth } from 'firebase-admin';
 import firebaseAdmin from '../utils/firebase_admin_config';
 import User from '../models/user';
 
-export const checkToken = async (request: Request) => {
+export const checkToken = async (request: Request, action: string) => {
   const { token, ...body } = request.body;
   if (token === undefined) {
     return {
-      authError:
-        'Only logged-in users can add journeys, please log in or sign up first',
+      authError: `Only logged-in users can ${action}, please log in or sign up first`,
     };
   }
   const decodedToken = await auth(firebaseAdmin).verifyIdToken(token);

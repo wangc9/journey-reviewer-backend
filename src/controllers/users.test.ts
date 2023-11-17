@@ -44,7 +44,6 @@ describe('Test user database logic', () => {
     const users = await User.find({});
     expect(users).toHaveLength(userCount + 1);
 
-    // @ts-ignore
     const usernames = users.map((user) => user.username);
     expect(usernames).toContain(`test${time}`);
   });

@@ -2,7 +2,13 @@ import express, { Request, Response } from 'express';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import 'express-async-errors';
 import Journey from '../models/journey';
-import { checkDuration, updateStation } from '../services/journey-service';
+import {
+  IDuration,
+  adjustTime,
+  checkDuration,
+  renewStation,
+  updateStation,
+} from '../services/journey-service';
 import { checkToken } from '../services/util-service';
 
 const journeysRouter = express.Router();
@@ -31,12 +37,12 @@ journeysRouter.get('/:id', async (request: Request, response: Response) => {
  * response: { journey, updatedUser, newDepart, newDestin }
  */
 journeysRouter.post('/', async (request: Request, response: Response) => {
-  const { body, user, authError } = await checkToken(request);
+  const { body, user, authError } = await checkToken(request, 'add journey');
   if (authError) {
     return response.status(401).json({ error: authError });
   }
   if (user === undefined) {
-    return response.status(400).json({ error: 'Wrong logic in checkToken' });
+    return response.status(500).json({ error: 'Wrong logic in checkToken' });
   }
   const duration = checkDuration({
     startTime: body.startTime,
@@ -79,41 +85,325 @@ journeysRouter.post('/', async (request: Request, response: Response) => {
 /**
  * receive token from firebase, decode and create new journey, return new journey
  * request: { journeyBody, token }
- * response: { newJourney }
+ * response: { newJourney, newDepart?, newDestin? }
  */
-// TODO: Add logic for endTime update when changing duration
-// TODO: Add logic for duration update when changing time
-// TODO: Add logic for station update
-// journeysRouter.put('/:id', async (request: Request, response: Response) => {
-//   const { token, ...body } = request.body;
-//   if (token === undefined) {
-//     response.status(401).json({
-//       error:
-//         'Only logged-in users can add stations, please log in or sign up first',
-//     });
-//   } else {
-//     const decodedToken = await auth(firebaseAdmin).verifyIdToken(token);
-//     if (!decodedToken) {
-//       response.status(401).json({
-//         error: 'Invalid user',
-//       });
-//     } else {
-//       const { uid } = decodedToken;
-//       const user = await User.findOne({ uid });
-//       if (user === null) {
-//         response.status(401).json({
-//           error: 'User not found',
-//         });
-//       } else {
-//         const newStation = await Station.findByIdAndUpdate(
-//           request.params.id,
-//           { ...body },
-//           { new: true },
-//         );
-//         response.status(201).json({ newStation });
-//       }
-//     }
-//   }
-// });
+journeysRouter.put('/:id', async (request: Request, response: Response) => {
+  const { body, user, authError } = await checkToken(request, 'add journey');
+  if (authError) {
+    return response.status(401).json({ error: authError });
+  }
+  if (user === undefined) {
+    return response.status(500).json({ error: 'Wrong logic in checkToken' });
+  }
+  const originalJourney = await Journey.findById(request.params.id);
+  if (originalJourney === null) {
+    return response
+      .status(400)
+      .json({ error: 'No journey found, please check the journey id again' });
+  }
+  if (body.departure || body.returnID) {
+    if (body.duration) {
+      if (body.startTime && body.endTime) {
+        const inputDuration: IDuration = {
+          startTime: body.startTime,
+          endTime: body.endTime,
+          duration: body.duration,
+        };
+        const newDuration = checkDuration(inputDuration);
+        if (newDuration === undefined) {
+          return response.status(400).json({
+            error: 'Time data does not match duration',
+          });
+        }
+        const newJourney = await Journey.findByIdAndUpdate(
+          request.params.id,
+          { ...body, duration: newDuration },
+          { new: true },
+        );
+        const { newDepart, newDestin, error } = await renewStation(
+          originalJourney.departure,
+          body.departure ? body.departure : originalJourney.departure,
+          originalJourney.returnID,
+          body.returnID ? body.returnID : originalJourney.returnID,
+          // eslint-disable-next-line no-underscore-dangle
+          originalJourney._id,
+          user.username,
+        );
+
+        if (error) {
+          return response.status(401).json({
+            error,
+          });
+        }
+
+        return response.status(200).json({ newJourney, newDepart, newDestin });
+      }
+      if (body.startTime) {
+        const newTime = adjustTime(body.startTime, body.duration, 'start');
+        const newJourney = await Journey.findByIdAndUpdate(
+          request.params.id,
+          { ...body, ...newTime },
+          { new: true },
+        );
+        const { newDepart, newDestin, error } = await renewStation(
+          originalJourney.departure,
+          body.departure ? body.departure : originalJourney.departure,
+          originalJourney.returnID,
+          body.returnID ? body.returnID : originalJourney.returnID,
+          // eslint-disable-next-line no-underscore-dangle
+          originalJourney._id,
+          user.username,
+        );
+
+        if (error) {
+          return response.status(401).json({
+            error,
+          });
+        }
+
+        return response.status(200).json({ newJourney, newDepart, newDestin });
+      }
+      if (body.endTime) {
+        const newTime = adjustTime(body.endTime, body.duration, 'end');
+        const newJourney = await Journey.findByIdAndUpdate(
+          request.params.id,
+          { ...body, ...newTime },
+          { new: true },
+        );
+        const { newDepart, newDestin, error } = await renewStation(
+          originalJourney.departure,
+          body.departure ? body.departure : originalJourney.departure,
+          originalJourney.returnID,
+          body.returnID ? body.returnID : originalJourney.returnID,
+          // eslint-disable-next-line no-underscore-dangle
+          originalJourney._id,
+          user.username,
+        );
+
+        if (error) {
+          return response.status(401).json({
+            error,
+          });
+        }
+
+        return response.status(200).json({ newJourney, newDepart, newDestin });
+      }
+
+      return response.status(401).json({
+        error:
+          'Can not only update duration, please also change at least one of the following: start time, end time',
+      });
+    }
+    if (body.startTime && body.endTime) {
+      const newDuration = checkDuration({
+        startTime: body.startTime,
+        endTime: body.endTime,
+      });
+      if (newDuration === undefined) {
+        return response.status(400).json({
+          error: 'Time data does not match duration',
+        });
+      }
+      const newJourney = await Journey.findByIdAndUpdate(
+        request.params.id,
+        { ...body, duration: newDuration },
+        { new: true },
+      );
+
+      const { newDepart, newDestin, error } = await renewStation(
+        originalJourney.departure,
+        body.departure ? body.departure : originalJourney.departure,
+        originalJourney.returnID,
+        body.returnID ? body.returnID : originalJourney.returnID,
+        // eslint-disable-next-line no-underscore-dangle
+        originalJourney._id,
+        user.username,
+      );
+
+      if (error) {
+        return response.status(401).json({
+          error,
+        });
+      }
+
+      return response.status(200).json({ newJourney, newDepart, newDestin });
+    }
+    if (body.startTime) {
+      const newTime = adjustTime(
+        body.startTime,
+        originalJourney.duration,
+        'start',
+      );
+      const newJourney = await Journey.findByIdAndUpdate(
+        request.params.id,
+        { ...body, ...newTime },
+        { new: true },
+      );
+
+      const { newDepart, newDestin, error } = await renewStation(
+        originalJourney.departure,
+        body.departure ? body.departure : originalJourney.departure,
+        originalJourney.returnID,
+        body.returnID ? body.returnID : originalJourney.returnID,
+        // eslint-disable-next-line no-underscore-dangle
+        originalJourney._id,
+        user.username,
+      );
+
+      if (error) {
+        return response.status(401).json({
+          error,
+        });
+      }
+
+      return response.status(200).json({ newJourney, newDepart, newDestin });
+    }
+    if (body.endTime) {
+      const newTime = adjustTime(body.endTime, originalJourney.duration, 'end');
+      const newJourney = await Journey.findByIdAndUpdate(
+        request.params.id,
+        { ...body, ...newTime },
+        { new: true },
+      );
+
+      const { newDepart, newDestin, error } = await renewStation(
+        originalJourney.departure,
+        body.departure ? body.departure : originalJourney.departure,
+        originalJourney.returnID,
+        body.returnID ? body.returnID : originalJourney.returnID,
+        // eslint-disable-next-line no-underscore-dangle
+        originalJourney._id,
+        user.username,
+      );
+
+      if (error) {
+        return response.status(401).json({
+          error,
+        });
+      }
+
+      return response.status(200).json({ newJourney, newDepart, newDestin });
+    }
+    const newJourney = await Journey.findByIdAndUpdate(
+      request.params.id,
+      { ...body },
+      { new: true },
+    );
+
+    const { newDepart, newDestin, error } = await renewStation(
+      originalJourney.departure,
+      body.departure ? body.departure : originalJourney.departure,
+      originalJourney.returnID,
+      body.returnID ? body.returnID : originalJourney.returnID,
+      // eslint-disable-next-line no-underscore-dangle
+      originalJourney._id,
+      user.username,
+    );
+
+    if (error) {
+      return response.status(401).json({
+        error,
+      });
+    }
+
+    return response.status(200).json({ newJourney, newDepart, newDestin });
+  }
+  if (body.duration) {
+    if (body.startTime && body.endTime) {
+      const inputDuration: IDuration = {
+        startTime: body.startTime,
+        endTime: body.endTime,
+        duration: body.duration,
+      };
+      const newDuration = checkDuration(inputDuration);
+      if (newDuration === undefined) {
+        return response.status(400).json({
+          error: 'Time data does not match duration',
+        });
+      }
+      const newJourney = await Journey.findByIdAndUpdate(
+        request.params.id,
+        { ...body, duration: newDuration },
+        { new: true },
+      );
+
+      return response.status(200).json({ newJourney });
+    }
+    if (body.startTime) {
+      const newTime = adjustTime(body.startTime, body.duration, 'start');
+      const newJourney = await Journey.findByIdAndUpdate(
+        request.params.id,
+        { ...body, ...newTime },
+        { new: true },
+      );
+
+      return response.status(200).json({ newJourney });
+    }
+    if (body.endTime) {
+      const newTime = adjustTime(body.endTime, body.duration, 'end');
+      const newJourney = await Journey.findByIdAndUpdate(
+        request.params.id,
+        { ...body, ...newTime },
+        { new: true },
+      );
+
+      return response.status(200).json({ newJourney });
+    }
+
+    return response.status(401).json({
+      error:
+        'Can not only update duration, please also change at least one of the following: start time, end time',
+    });
+  }
+  if (body.startTime && body.endTime) {
+    const newDuration = checkDuration({
+      startTime: body.startTime,
+      endTime: body.endTime,
+    });
+    if (newDuration === undefined) {
+      return response.status(400).json({
+        error: 'Time data does not match duration',
+      });
+    }
+    const newJourney = await Journey.findByIdAndUpdate(
+      request.params.id,
+      { ...body, duration: newDuration },
+      { new: true },
+    );
+
+    return response.status(200).json({ newJourney });
+  }
+  if (body.startTime) {
+    const newTime = adjustTime(
+      body.startTime,
+      originalJourney.duration,
+      'start',
+    );
+    const newJourney = await Journey.findByIdAndUpdate(
+      request.params.id,
+      { ...body, ...newTime },
+      { new: true },
+    );
+
+    return response.status(200).json({ newJourney });
+  }
+  if (body.endTime) {
+    const newTime = adjustTime(body.endTime, originalJourney.duration, 'end');
+    const newJourney = await Journey.findByIdAndUpdate(
+      request.params.id,
+      { ...body, ...newTime },
+      { new: true },
+    );
+
+    return response.status(200).json({ newJourney });
+  }
+  const newJourney = await Journey.findByIdAndUpdate(
+    request.params.id,
+    { ...body },
+    { new: true },
+  );
+
+  return response.status(200).json({ newJourney });
+});
 
 export default journeysRouter;

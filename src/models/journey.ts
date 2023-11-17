@@ -6,7 +6,7 @@ export interface IJourney {
   departure: number;
   returnID: number;
   distance: number;
-  duration?: number;
+  duration: number;
   user: mongoose.Types.ObjectId;
 }
 
@@ -65,6 +65,6 @@ journeySchema.set('toJSON', {
   },
 });
 
-const Journey = mongoose.model<IJourneyModel>('Journey', journeySchema);
+const Journey = mongoose.model<IJourneyDocument>('Journey', journeySchema);
 
 export default Journey;

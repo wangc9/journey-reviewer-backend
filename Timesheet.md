@@ -11,4 +11,5 @@
 | 9.11. |   5  | Add additional station handling method                   |
 |10.11. |   3  | Add error handling in station router                     |
 |14.11. |   8  | Add more MongoDB Schema and tests, add routers and fix type errors                                                               |
-|  yht  |  41  |                                                          |
+|17.11. |  11  | Add update handling in journey router, fix multiple bugs |
+|  yht  |  52  |                                                          |

@@ -33,10 +33,17 @@ describe('Test station without login', () => {
 
 describe('Test station database logic', () => {
   let time: number;
+  let token: string | undefined;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     const date = new Date();
     time = date.getTime();
+    await signInWithEmailAndPassword(
+      auth,
+      'test1699277335156@test.com',
+      'qwerty123',
+    );
+    token = await auth.currentUser?.getIdToken(true);
   });
 
   test('Add station successful with correct credientials', async () => {
@@ -53,12 +60,6 @@ describe('Test station database logic', () => {
       x: 60.000001,
       y: 52.511112,
     };
-    await signInWithEmailAndPassword(
-      auth,
-      'test1699277335156@test.com',
-      'qwerty123',
-    );
-    const token = await auth.currentUser?.getIdToken(true);
     const result = await api
       .post('/api/stations')
       .send({ ...testStation, token })
@@ -82,12 +83,6 @@ describe('Test station database logic', () => {
       x: 60.000001,
       y: 52.511112,
     };
-    await signInWithEmailAndPassword(
-      auth,
-      'test1699277335156@test.com',
-      'qwerty123',
-    );
-    const token = await auth.currentUser?.getIdToken(true);
     const result = await api
       .post('/api/stations')
       .send({ ...testStation, token })
@@ -97,12 +92,6 @@ describe('Test station database logic', () => {
   });
 
   test('Station can be updated', async () => {
-    await signInWithEmailAndPassword(
-      auth,
-      'test1699277335156@test.com',
-      'qwerty123',
-    );
-    const token = await auth.currentUser?.getIdToken(true);
     const station = await Station.findOne({ SId: time });
     if (station) {
       const result = await api

@@ -13,17 +13,28 @@ stationsRouter.get('/', async (_request: Request, response: Response) => {
 });
 
 /**
+ * returns station from database by SId
+ */
+stationsRouter.get(
+  '/sid/:sid',
+  async (request: Request, response: Response) => {
+    const station = await Station.findOne({ SId: request.params.sid });
+    response.json({ station });
+  },
+);
+
+/**
  * receive token from firebase, decode and create new station, return new station
  * request: { stationBody, token }
  * response: { updatedUser, station }
  */
 stationsRouter.post('/', async (request: Request, response: Response) => {
-  const { body, user, authError } = await checkToken(request);
+  const { body, user, authError } = await checkToken(request, 'add station');
   if (authError) {
     return response.status(401).json({ error: authError });
   }
   if (user === undefined) {
-    return response.status(400).json({ error: 'Wrong logic in checkToken' });
+    return response.status(500).json({ error: 'Wrong logic in checkToken' });
   }
 
   const newStation = new Station({
@@ -41,11 +52,9 @@ stationsRouter.post('/', async (request: Request, response: Response) => {
     if (error instanceof Error) {
       return response.status(401).json({ error: error.message });
     }
-    return response
-      .status(400)
-      .json({
-        error: 'A logic error occuered when posting through stationsRouter',
-      });
+    return response.status(500).json({
+      error: 'A logic error occuered when posting through stationsRouter',
+    });
   }
 });
 
@@ -55,12 +64,12 @@ stationsRouter.post('/', async (request: Request, response: Response) => {
  * response: { newStation }
  */
 stationsRouter.put('/:id', async (request: Request, response: Response) => {
-  const { body, user, authError } = await checkToken(request);
+  const { body, user, authError } = await checkToken(request, 'delete station');
   if (authError) {
     return response.status(401).json({ error: authError });
   }
   if (user === undefined) {
-    return response.status(400).json({ error: 'Wrong logic in checkToken' });
+    return response.status(500).json({ error: 'Wrong logic in checkToken' });
   }
   const newStation = await Station.findByIdAndUpdate(
     request.params.id,

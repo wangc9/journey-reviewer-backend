@@ -2,10 +2,33 @@
 Note: "*" indicates that the commit link is a placeholder. The corresponding link will be updated in the next commit.
 
 
+## v0.5.0
+
+### Features
+- [``](https://github.com/wangc9/journey-reviewer-backend/commit/a9a61f41bd1aa2523b7c93fd1aa00cbbe0595bcd) Add journey update handling*
+  - When only updating `duration`, return error
+  - When only updating `startTime` or `endTime`, the unspecified time change according to original duration
+  - When updating `duration` and one of the time, the unspecified time change according to the updated duration
+  - When updating both `startTime` and `endTime`, duration change accordingly
+  - When updating all three time fields, perform duration check and update accordingly
+  - When changing `departure` and/or `returnID`, station content change accordingly (`journeys`, `departure` or `destination`)
+
+- [``](https://github.com/wangc9/journey-reviewer-backend/commit/a9a61f41bd1aa2523b7c93fd1aa00cbbe0595bcd) Add station handling to query by station id `SId`*
+
+### Bug Fixes
+
+- [``](https://github.com/wangc9/journey-reviewer-backend/commit/a9a61f41bd1aa2523b7c93fd1aa00cbbe0595bcd) Fix `checkToken` expression error*
+
+- [``](https://github.com/wangc9/journey-reviewer-backend/commit/a9a61f41bd1aa2523b7c93fd1aa00cbbe0595bcd) Fix `auth/quota-exceeded` problem by restricting sign-ins during tests*
+
+- [``](https://github.com/wangc9/journey-reviewer-backend/commit/a9a61f41bd1aa2523b7c93fd1aa00cbbe0595bcd) Fix Type error in `Journey` Model*
+
+
+
 ## v0.4.2
 
 ### Chores
-- [``](https://github.com/wangc9/journey-reviewer-backend/commit/a9a61f41bd1aa2523b7c93fd1aa00cbbe0595bcd) Move token checking during all actions with `Journey` and `Station` to a new service `checkToken` in`util-service`*
+- [`a41df87`](https://github.com/wangc9/journey-reviewer-backend/commit/a41df87a8e87c0be992a3b1b4611874d1ed02633) Move token checking during all actions with `Journey` and `Station` to a new service `checkToken` in`util-service`
 
 
 ## v0.4.1
