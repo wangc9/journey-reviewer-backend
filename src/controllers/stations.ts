@@ -64,7 +64,7 @@ stationsRouter.post('/', async (request: Request, response: Response) => {
  * response: { newStation }
  */
 stationsRouter.put('/:id', async (request: Request, response: Response) => {
-  const { body, user, authError } = await checkToken(request, 'delete station');
+  const { body, user, authError } = await checkToken(request, 'update station');
   if (authError) {
     return response.status(401).json({ error: authError });
   }
@@ -77,6 +77,35 @@ stationsRouter.put('/:id', async (request: Request, response: Response) => {
     { new: true },
   );
   return response.status(201).json({ newStation });
+});
+
+stationsRouter.delete('/:id', async (request: Request, response: Response) => {
+  const { user, authError } = await checkToken(request, 'update station');
+  if (authError) {
+    return response.status(401).json({ error: authError });
+  }
+  if (user === undefined) {
+    return response.status(500).json({ error: 'Wrong logic in checkToken' });
+  }
+  const stationToDelete = await Station.findById(request.params.id);
+  if (stationToDelete !== null) {
+    const arriveJourneys = stationToDelete.journeys.get('arrive');
+    const departJourneys = stationToDelete.journeys.get('depart');
+    if (
+      (arriveJourneys && arriveJourneys.length > 0) ||
+      (departJourneys && departJourneys.length > 0)
+    ) {
+      return response.status(403).json({
+        error:
+          'Only station without affiliated journeys can be deleted. If you indeed want to delete this station, please delete all its attached journeys first',
+      });
+    }
+    await Station.findByIdAndDelete(request.params.id);
+
+    return response.status(204).end();
+  }
+
+  return response.status(400).json({ error: 'Can not find station' });
 });
 
 export default stationsRouter;

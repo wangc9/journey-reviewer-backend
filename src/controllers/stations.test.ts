@@ -103,6 +103,34 @@ describe('Test station database logic', () => {
       expect(result.body.newStation.Nimi).toBe('testi s');
     }
   });
+
+  test('Empty station can be deleted', async () => {
+    const station = await Station.findOne({ SId: time });
+    if (station) {
+      await api
+        // eslint-disable-next-line no-underscore-dangle
+        .delete(`/api/stations/${station._id}`)
+        .send({ token })
+        .expect(204);
+      const temp = await Station.findOne({ SId: time });
+      expect(temp).toBe(null);
+    }
+  });
+
+  test('Can not delete occupied station', async () => {
+    const station = await Station.findOne({ SId: 1700209396660 });
+    if (station) {
+      const result = await api
+        // eslint-disable-next-line no-underscore-dangle
+        .delete(`/api/stations/${station._id}`)
+        .send({ token })
+        .expect(403)
+        .expect('Content-Type', /application\/json/);
+      expect(result.body.error).toContain(
+        'please delete all its attached journeys first',
+      );
+    }
+  });
 });
 
 afterAll((done) => {

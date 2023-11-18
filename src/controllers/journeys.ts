@@ -10,6 +10,7 @@ import {
   updateStation,
 } from '../services/journey-service';
 import { checkToken } from '../services/util-service';
+import { deleteJourney } from '../services/station-service';
 
 const journeysRouter = express.Router();
 
@@ -88,7 +89,7 @@ journeysRouter.post('/', async (request: Request, response: Response) => {
  * response: { newJourney, newDepart?, newDestin? }
  */
 journeysRouter.put('/:id', async (request: Request, response: Response) => {
-  const { body, user, authError } = await checkToken(request, 'add journey');
+  const { body, user, authError } = await checkToken(request, 'update journey');
   if (authError) {
     return response.status(401).json({ error: authError });
   }
@@ -404,6 +405,41 @@ journeysRouter.put('/:id', async (request: Request, response: Response) => {
   );
 
   return response.status(200).json({ newJourney });
+});
+
+journeysRouter.delete('/:id', async (request: Request, response: Response) => {
+  const { user, authError } = await checkToken(request, 'delete journey');
+  if (authError) {
+    return response.status(401).json({ error: authError });
+  }
+  if (user === undefined) {
+    return response.status(500).json({ error: 'Wrong logic in checkToken' });
+  }
+  const journey = await Journey.findById(request.params.id);
+  if (journey) {
+    // eslint-disable-next-line no-underscore-dangle
+    if (journey.user.toString() !== user._id.toString()) {
+      return response.status(403).json({
+        error:
+          'You do not have clearance. Only the author of the journey can delete it',
+      });
+    }
+    const { updatedDepartStation, updatedDestStation, error } =
+      await deleteJourney({
+        departure: journey.departure,
+        returnID: journey.returnID,
+        journeyID: request.params.id,
+      });
+    if (error) {
+      return response.status(500).json({ error });
+    }
+    await Journey.findByIdAndDelete(request.params.id);
+
+    return response
+      .status(204)
+      .json({ updatedDepartStation, updatedDestStation });
+  }
+  return response.status(500).json({ error: 'Can not find journey' });
 });
 
 export default journeysRouter;

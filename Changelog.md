@@ -2,10 +2,22 @@
 Note: "*" indicates that the commit link is a placeholder. The corresponding link will be updated in the next commit.
 
 
+## v0.6.0
+
+### Features
+- [``](https://github.com/wangc9/journey-reviewer-backend/commit/19d5628b4c3499983878d5383ad0785d86f8143f) Add journey and station deletion handling*
+  - When deleting journey, its departure and destination station will erase the record of the journey, using `deleteJourney` in the new `station-service`
+  - Station can only be deleted when there are no journeys to or from the station
+
+### Chores
+
+- [``](https://github.com/wangc9/journey-reviewer-backend/commit/19d5628b4c3499983878d5383ad0785d86f8143f) Fix the file name of `journeysRouter` unit test*
+
+
 ## v0.5.0
 
 ### Features
-- [``](https://github.com/wangc9/journey-reviewer-backend/commit/a9a61f41bd1aa2523b7c93fd1aa00cbbe0595bcd) Add journey update handling*
+- [`19d5628`](https://github.com/wangc9/journey-reviewer-backend/commit/19d5628b4c3499983878d5383ad0785d86f8143f) Add journey update handling
   - When only updating `duration`, return error
   - When only updating `startTime` or `endTime`, the unspecified time change according to original duration
   - When updating `duration` and one of the time, the unspecified time change according to the updated duration
@@ -13,15 +25,15 @@ Note: "*" indicates that the commit link is a placeholder. The corresponding lin
   - When updating all three time fields, perform duration check and update accordingly
   - When changing `departure` and/or `returnID`, station content change accordingly (`journeys`, `departure` or `destination`)
 
-- [``](https://github.com/wangc9/journey-reviewer-backend/commit/a9a61f41bd1aa2523b7c93fd1aa00cbbe0595bcd) Add station handling to query by station id `SId`*
+- [`19d5628`](https://github.com/wangc9/journey-reviewer-backend/commit/19d5628b4c3499983878d5383ad0785d86f8143f) Add station handling to query by station id `SId`
 
 ### Bug Fixes
 
-- [``](https://github.com/wangc9/journey-reviewer-backend/commit/a9a61f41bd1aa2523b7c93fd1aa00cbbe0595bcd) Fix `checkToken` expression error*
+- [`19d5628`](https://github.com/wangc9/journey-reviewer-backend/commit/19d5628b4c3499983878d5383ad0785d86f8143f) Fix `checkToken` expression error
 
-- [``](https://github.com/wangc9/journey-reviewer-backend/commit/a9a61f41bd1aa2523b7c93fd1aa00cbbe0595bcd) Fix `auth/quota-exceeded` problem by restricting sign-ins during tests*
+- [`19d5628`](https://github.com/wangc9/journey-reviewer-backend/commit/19d5628b4c3499983878d5383ad0785d86f8143f) Fix `auth/quota-exceeded` problem by restricting sign-ins during tests
 
-- [``](https://github.com/wangc9/journey-reviewer-backend/commit/a9a61f41bd1aa2523b7c93fd1aa00cbbe0595bcd) Fix Type error in `Journey` Model*
+- [`19d5628`](https://github.com/wangc9/journey-reviewer-backend/commit/19d5628b4c3499983878d5383ad0785d86f8143f) Fix Type error in `Journey` Model
 
 
 

@@ -7,7 +7,6 @@ import mongoose from 'mongoose';
 import firebaseClient from '../utils/firebase_client_config';
 import app from '../../app';
 import Journey, { IJourney } from '../models/journey';
-// import Station from '../models/station';
 
 const api = supertest(app);
 
@@ -63,7 +62,7 @@ describe('Test journey database logic', () => {
       .expect('Content-Type', /application\/json/);
   });
 
-  test('Add journey successful with correct credientials', async () => {
+  test('Add journey successful with correct credentials', async () => {
     const testJourney: Omit<IJourney, 'user' | 'duration'> = {
       startTime: time,
       endTime,
@@ -188,7 +187,7 @@ describe('Test journey database logic', () => {
             .get(`/api/stations/sid/${journey.returnID}`)
             .expect(200);
           const initNewDeparture = await api
-            .get('/api/stations/sid/1700221307688')
+            .get('/api/stations/sid/1700209359420')
             .expect(200);
           const destinationID = destination.body.station.id;
           const oldDepartID = initOldDepartStation.body.station.id;
@@ -196,7 +195,7 @@ describe('Test journey database logic', () => {
           const result = await api
             // eslint-disable-next-line no-underscore-dangle
             .put(`/api/journeys/${journey._id}`)
-            .send({ startTime: endTime, departure: 1700221307688, token })
+            .send({ startTime: endTime, departure: 1700209359420, token })
             .expect(200)
             .expect('Content-Type', /application\/json/);
           const tempResult = new Date(endTime);
@@ -213,7 +212,7 @@ describe('Test journey database logic', () => {
             initOldDepartStation.body.station.destination[destinationID] - 1,
           );
           const newDeparture = await api
-            .get('/api/stations/sid/1700221307688')
+            .get('/api/stations/sid/1700209359420')
             .expect(200);
           expect(
             newDeparture.body.station.journeys.depart,
@@ -323,7 +322,7 @@ describe('Test journey database logic', () => {
             .get(`/api/stations/sid/${journey.returnID}`)
             .expect(200);
           const initNewDeparture = await api
-            .get('/api/stations/sid/1700221307688')
+            .get('/api/stations/sid/1700209359420')
             .expect(200);
           const destinationID = destination.body.station.id;
           const oldDepartID = initOldDepartStation.body.station.id;
@@ -333,7 +332,7 @@ describe('Test journey database logic', () => {
           const result = await api
             // eslint-disable-next-line no-underscore-dangle
             .put(`/api/journeys/${journey._id}`)
-            .send({ endTime: tempInput, departure: 1700221307688, token })
+            .send({ endTime: tempInput, departure: 1700209359420, token })
             .expect(200)
             .expect('Content-Type', /application\/json/);
           expect(result.body.newJourney.startTime).toBe(endTime);
@@ -348,7 +347,7 @@ describe('Test journey database logic', () => {
             initOldDepartStation.body.station.destination[destinationID] - 1,
           );
           const newDeparture = await api
-            .get('/api/stations/sid/1700221307688')
+            .get('/api/stations/sid/1700209359420')
             .expect(200);
           expect(
             newDeparture.body.station.journeys.depart,
@@ -458,7 +457,7 @@ describe('Test journey database logic', () => {
             .get(`/api/stations/sid/${journey.returnID}`)
             .expect(200);
           const initNewDeparture = await api
-            .get('/api/stations/sid/1700221307688')
+            .get('/api/stations/sid/1700209359420')
             .expect(200);
           const destinationID = destination.body.station.id;
           const oldDepartID = initOldDepartStation.body.station.id;
@@ -466,7 +465,7 @@ describe('Test journey database logic', () => {
           const result = await api
             // eslint-disable-next-line no-underscore-dangle
             .put(`/api/journeys/${journey._id}`)
-            .send({ startTime: time, endTime, departure: 1700221307688, token })
+            .send({ startTime: time, endTime, departure: 1700209359420, token })
             .expect(200)
             .expect('Content-Type', /application\/json/);
           expect(result.body.newJourney.startTime).toBe(time);
@@ -483,7 +482,7 @@ describe('Test journey database logic', () => {
             initOldDepartStation.body.station.destination[destinationID] - 1,
           );
           const newDeparture = await api
-            .get('/api/stations/sid/1700221307688')
+            .get('/api/stations/sid/1700209359420')
             .expect(200);
           expect(
             newDeparture.body.station.journeys.depart,
@@ -942,7 +941,7 @@ describe('Test journey database logic', () => {
             .get(`/api/stations/sid/${journey.returnID}`)
             .expect(200);
           const initNewDeparture = await api
-            .get('/api/stations/sid/1700221307688')
+            .get('/api/stations/sid/1700209359420')
             .expect(200);
           const initNewDestination = await api
             .get('/api/stations/sid/1700211537126')
@@ -958,7 +957,7 @@ describe('Test journey database logic', () => {
             .put(`/api/journeys/${journey._id}`)
             .send({
               startTime: tempInput.toISOString(),
-              departure: 1700221307688,
+              departure: 1700209359420,
               returnID: 1700211537126,
               duration: 100,
               token,
@@ -980,7 +979,7 @@ describe('Test journey database logic', () => {
             initOldDepartStation.body.station.destination[oldDestID] - 1,
           );
           const newDeparture = await api
-            .get('/api/stations/sid/1700221307688')
+            .get('/api/stations/sid/1700209359420')
             .expect(200);
           expect(
             newDeparture.body.station.journeys.depart,
@@ -1109,7 +1108,7 @@ describe('Test journey database logic', () => {
             .get(`/api/stations/sid/${journey.returnID}`)
             .expect(200);
           const initNewDeparture = await api
-            .get('/api/stations/sid/1700221307688')
+            .get('/api/stations/sid/1700209359420')
             .expect(200);
           const initNewDestination = await api
             .get('/api/stations/sid/1700211537126')
@@ -1126,7 +1125,7 @@ describe('Test journey database logic', () => {
             .send({
               endTime: tempInput.toISOString(),
               duration: 40,
-              departure: 1700221307688,
+              departure: 1700209359420,
               returnID: 1700211537126,
               token,
             })
@@ -1147,7 +1146,7 @@ describe('Test journey database logic', () => {
             initOldDepartStation.body.station.destination[oldDestID] - 1,
           );
           const newDeparture = await api
-            .get('/api/stations/sid/1700221307688')
+            .get('/api/stations/sid/1700209359420')
             .expect(200);
           expect(
             newDeparture.body.station.journeys.depart,
@@ -1267,6 +1266,48 @@ describe('Test journey database logic', () => {
         }
       });
     });
+  });
+
+  test('Journey can be deleted', async () => {
+    const journey = await Journey.findById(id);
+    if (journey) {
+      const departSID = journey.departure;
+      const destSID = journey.returnID;
+      const oldDepartStation = await api
+        .get(`/api/stations/sid/${departSID}`)
+        .expect(200);
+      const oldDestStation = await api
+        .get(`/api/stations/sid/${destSID}`)
+        .expect(200);
+      await api.delete(`/api/journeys/${id}`).send({ token }).expect(204);
+      const departStation = await api
+        .get(`/api/stations/sid/${departSID}`)
+        .expect(200);
+      const destStation = await api
+        .get(`/api/stations/sid/${destSID}`)
+        .expect(200);
+      if (departStation && destStation && oldDepartStation && oldDestStation) {
+        expect(departStation.body.station.journeys.depart).not.toContain(id);
+        expect(
+          departStation.body.station.destination[
+            oldDestStation.body.station.id
+          ],
+        ).toBe(
+          oldDepartStation.body.station.destination[
+            oldDestStation.body.station.id
+          ] - 1,
+        );
+
+        expect(destStation.body.station.journeys.arrive).not.toContain(id);
+        expect(
+          destStation.body.station.departure[oldDepartStation.body.station.id],
+        ).toBe(
+          oldDestStation.body.station.departure[
+            oldDepartStation.body.station.id
+          ] - 1,
+        );
+      }
+    }
   });
 });
 
