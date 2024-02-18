@@ -2,16 +2,22 @@
 Note: "*" indicates that the commit link is a placeholder. The corresponding link will be updated in the next commit.
 
 
+## v0.6.1
+
+### Features
+- [`7a0b7ca`](https://github.com/wangc9/journey-reviewer-backend/commit/7a0b7cad58f3c5a5a77fe1c4e057533e9bac342b) Change CI pipeline to enable actions on pull requests
+
+
 ## v0.6.0
 
 ### Features
-- [``](https://github.com/wangc9/journey-reviewer-backend/commit/19d5628b4c3499983878d5383ad0785d86f8143f) Add journey and station deletion handling*
+- [`7a0b7ca`](https://github.com/wangc9/journey-reviewer-backend/commit/7a0b7cad58f3c5a5a77fe1c4e057533e9bac342b) Add journey and station deletion handling
   - When deleting journey, its departure and destination station will erase the record of the journey, using `deleteJourney` in the new `station-service`
   - Station can only be deleted when there are no journeys to or from the station
 
 ### Chores
 
-- [``](https://github.com/wangc9/journey-reviewer-backend/commit/19d5628b4c3499983878d5383ad0785d86f8143f) Fix the file name of `journeysRouter` unit test*
+- [`7a0b7ca`](https://github.com/wangc9/journey-reviewer-backend/commit/7a0b7cad58f3c5a5a77fe1c4e057533e9bac342b) Fix the file name of `journeysRouter` unit test*
 
 
 ## v0.5.0
