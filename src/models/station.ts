@@ -2,7 +2,7 @@ import mongoose, { Document, Model } from 'mongoose';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import mongooseUniqueValidator from 'mongoose-unique-validator';
 
-interface IStation {
+export interface IStation {
   SId: number;
   Nimi: string;
   Namn: string;

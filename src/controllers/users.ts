@@ -15,6 +15,18 @@ userRouter.get('/', async (_request: Request, response: Response) => {
 });
 
 /**
+ * return user information by uid
+ */
+userRouter.get('/:uid', async (request: Request, response: Response) => {
+  const user = await User.find({ uid: request.params.uid }).populate([
+    'stations',
+    'journeys',
+  ]);
+
+  response.json(user);
+});
+
+/**
  * receive token from firebase, decode and create new user, return new user
  * request: { username, token }
  * response: { user }

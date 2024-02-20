@@ -2,10 +2,19 @@
 Note: "*" indicates that the commit link is a placeholder. The corresponding link will be updated in the next commit.
 
 
+## v0.7.0
+
+### Features
+- [`4fbfbd6`](https://github.com/wangc9/journey-reviewer-backend/commit/4fbfbd67eb53758dcbd1c8b2ac8529b29b604fb3)* Enable file upload
+  - Use `multer` middleware for handling form data.
+  - Use `papaparse` for parsing csv data.
+  - Add new station route handler for posting csv file to `/api/stations/file`. Validations are performed on each entry except the `kaupunki` and `stad` properties. `kaupunki` uses `Helsinki` as default and `stad` uses `Helsingfors` as default. The lack of `operaattor` property does not affect the validation.
+  - Update CI pipeline to use Node 20.
+
 ## v0.6.1
 
 ### Features
-- [`7a0b7ca`](https://github.com/wangc9/journey-reviewer-backend/commit/7a0b7cad58f3c5a5a77fe1c4e057533e9bac342b) Change CI pipeline to enable actions on pull requests
+- [`4fbfbd6`](https://github.com/wangc9/journey-reviewer-backend/commit/4fbfbd67eb53758dcbd1c8b2ac8529b29b604fb3) Change CI pipeline to enable actions on pull requests
 
 
 ## v0.6.0
