@@ -12,14 +12,21 @@ const app = express();
 
 dotenv.config();
 mongoose.set('strictQuery', false);
-const url = process.env.MONGODB_URL;
+const url =
+  process.env.NODE_ENV === 'test'
+    ? process.env.MONGODB_TEST_URL
+    : process.env.MONGODB_PROD_URL;
 if (typeof url === 'string') {
   mongoose
     .connect(url)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .then((_result) => {
       // eslint-disable-next-line no-console
-      console.log('Connected to MongoDB');
+      console.log(
+        `Connected to ${
+          process.env.NODE_ENV === 'test' ? 'test' : 'production'
+        } database`,
+      );
     })
     .catch((error) => {
       // eslint-disable-next-line no-console
