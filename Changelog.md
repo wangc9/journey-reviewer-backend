@@ -5,7 +5,10 @@ Note: "*" indicates that the commit link is a placeholder. The corresponding lin
 ## v0.7.1
 
 ### Features
-- [`aa30ee4`](https://github.com/wangc9/journey-reviewer-backend/commit/aa30ee487d5cbfda865486fd6257f8f18de40ce3)* Use a separate database for production
+- [`d4b573b`](https://github.com/wangc9/journey-reviewer-backend/commit/d4b573bbe395e2b5cc84adff26c9f581bc708d92) Use a separate database for production
+
+### Bug Fixes
+- [`d4b573b`](https://github.com/wangc9/journey-reviewer-backend/commit/d4b573bbe395e2b5cc84adff26c9f581bc708d92)* Update environment variables in CI pipeline
 
 
 ## v0.7.0

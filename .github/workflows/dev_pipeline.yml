@@ -23,7 +23,8 @@ jobs:
         run: npm run lint
       - name: Run jest tests
         env:
-          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          MONGODB_TEST_URL: ${{ secrets.MONGODB_TEST_URL }}
+          MONGODB_PROD_URL: ${{ secrets.MONGODB_PROD_URL }}
         run: npm test
 
   version_change:
