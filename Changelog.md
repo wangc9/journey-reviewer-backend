@@ -2,13 +2,19 @@
 Note: "*" indicates that the commit link is a placeholder. The corresponding link will be updated in the next commit.
 
 
+## v0.7.2
+
+### Features
+- [`d4b573b`](https://github.com/wangc9/journey-reviewer-backend/commit/d4b573bbe395e2b5cc84adff26c9f581bc708d92)* Change response for file upload
+
+
 ## v0.7.1
 
 ### Features
 - [`d4b573b`](https://github.com/wangc9/journey-reviewer-backend/commit/d4b573bbe395e2b5cc84adff26c9f581bc708d92) Use a separate database for production
 
 ### Bug Fixes
-- [`d4b573b`](https://github.com/wangc9/journey-reviewer-backend/commit/d4b573bbe395e2b5cc84adff26c9f581bc708d92)* Update environment variables in CI pipeline
+- [`3f89d29`](https://github.com/wangc9/journey-reviewer-backend/commit/3f89d2939f364de6b6c11103dc9141a202adf72c) Update environment variables in CI pipeline
 
 
 ## v0.7.0

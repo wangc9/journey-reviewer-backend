@@ -149,10 +149,12 @@ stationsRouter.post(
         },
         error: (error: unknown) => {
           if (error instanceof Error)
-            return response.status(500).json({ error: error.message });
+            return response
+              .status(500)
+              .json({ condition: 0, message: error.message });
           return response
             .status(500)
-            .json({ error: 'unknown error during parsing' });
+            .json({ condition: 0, message: 'unknown error during parsing' });
         },
       });
       try {
@@ -160,9 +162,21 @@ stationsRouter.post(
           ordered: false,
         });
         const addedStations: Array<mongoose.Types.ObjectId> = [];
+        const resultStations: Array<{
+          sid: number;
+          name: string;
+          x: number;
+          y: number;
+        }> = [];
         results.forEach((result) => {
           // eslint-disable-next-line no-underscore-dangle
           addedStations.push(result._id);
+          resultStations.push({
+            sid: result.SId,
+            name: result.Name,
+            x: result.x,
+            y: result.y,
+          });
           const index = stationBuffer.findIndex(
             (station) => station.SId === result.SId,
           );
@@ -174,23 +188,27 @@ stationsRouter.post(
         await user.save();
 
         return response.status(201).json({
-          status: 1,
+          condition: 1,
           message: `${addedStations.length} stations added`,
+          added: resultStations,
           disregarded: stationBuffer.map((station) => station.Nimi).join(',\n'),
         });
       } catch (error) {
         if (error instanceof Error)
           return response
             .status(401)
-            .json({ status: 0, message: error.message });
+            .json({ condition: 0, message: error.message });
         return response
           .status(500)
-          .json({ status: 0, message: 'unknown error when adding documents' });
+          .json({
+            condition: 0,
+            message: 'unknown error when adding documents',
+          });
       }
     }
     return response
       .status(500)
-      .json({ status: 0, message: 'No file detected' });
+      .json({ condition: 0, message: 'No file detected' });
   },
 );
 
