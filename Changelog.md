@@ -2,10 +2,16 @@
 Note: "*" indicates that the commit link is a placeholder. The corresponding link will be updated in the next commit.
 
 
+## v0.7.3
+
+### Features
+- [`b1687a7`](https://github.com/wangc9/journey-reviewer-backend/commit/b1687a7ae16732e4279a54836b1e29959be87687)* Add pagination for stations
+
+
 ## v0.7.2
 
 ### Features
-- [`d4b573b`](https://github.com/wangc9/journey-reviewer-backend/commit/d4b573bbe395e2b5cc84adff26c9f581bc708d92)* Change response for file upload
+- [`b1687a7`](https://github.com/wangc9/journey-reviewer-backend/commit/b1687a7ae16732e4279a54836b1e29959be87687) Change response for file upload
 
 
 ## v0.7.1

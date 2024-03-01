@@ -29,6 +29,19 @@ stationsRouter.get(
 );
 
 /**
+ * Return stations using pagination. Each page returns 20 entries of stations.
+ */
+stationsRouter.get(
+  '/page/:page',
+  async (request: Request, response: Response) => {
+    const stations = await Station.find({})
+      .skip(Number(request.params.page) * 20)
+      .limit(20);
+    response.json({ stations });
+  },
+);
+
+/**
  * receive token from firebase, decode and create new station, return new station
  * request: { stationBody, token }
  * response: { updatedUser, station }
@@ -198,12 +211,10 @@ stationsRouter.post(
           return response
             .status(401)
             .json({ condition: 0, message: error.message });
-        return response
-          .status(500)
-          .json({
-            condition: 0,
-            message: 'unknown error when adding documents',
-          });
+        return response.status(500).json({
+          condition: 0,
+          message: 'unknown error when adding documents',
+        });
       }
     }
     return response
