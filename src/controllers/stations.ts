@@ -29,17 +29,25 @@ stationsRouter.get(
 );
 
 /**
- * Return stations using pagination. Each page returns 20 entries of stations.
+ * Return stations using pagination. Each page returns 10 entries of stations.
  */
 stationsRouter.get(
   '/page/:page',
   async (request: Request, response: Response) => {
     const stations = await Station.find({})
-      .skip(Number(request.params.page) * 20)
-      .limit(20);
+      .skip(Number(request.params.page) * 10)
+      .limit(10);
     response.json({ stations });
   },
 );
+
+/**
+ * Return the number of pages.
+ */
+stationsRouter.get('/count', async (_request: Request, response: Response) => {
+  const count = await Station.countDocuments({});
+  response.json({ count: Math.ceil(count / 10) });
+});
 
 /**
  * receive token from firebase, decode and create new station, return new station

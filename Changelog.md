@@ -2,10 +2,16 @@
 Note: "*" indicates that the commit link is a placeholder. The corresponding link will be updated in the next commit.
 
 
+## v0.7.4
+
+### Features
+- [`7602744`](https://github.com/wangc9/journey-reviewer-backend/commit/7602744eaadd70d0a8548359e58527438028390e)* Add station handler to return the number of pages
+
+
 ## v0.7.3
 
 ### Features
-- [`b1687a7`](https://github.com/wangc9/journey-reviewer-backend/commit/b1687a7ae16732e4279a54836b1e29959be87687)* Add pagination for stations
+- [`7602744`](https://github.com/wangc9/journey-reviewer-backend/commit/7602744eaadd70d0a8548359e58527438028390e) Add pagination for stations
 
 
 ## v0.7.2
