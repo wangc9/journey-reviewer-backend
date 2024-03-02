@@ -13,7 +13,7 @@ export const checkDuration = (body: IDuration): undefined | number => {
   const journeyEnd = new Date(body.endTime);
   const duration = (journeyEnd.getTime() - journeyStart.getTime()) / 1000;
   if (
-    (body.duration && Math.abs(body.duration - duration) > 1) ||
+    (body.duration && Math.abs(body.duration - duration) > 10) ||
     duration < 10
   ) {
     return undefined;

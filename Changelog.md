@@ -2,10 +2,16 @@
 Note: "*" indicates that the commit link is a placeholder. The corresponding link will be updated in the next commit.
 
 
+## v0.7.5
+
+### Features
+- [`5774ceb`](https://github.com/wangc9/journey-reviewer-backend/commit/5774ceb7fd33c8c635133702ff4ea851c6c02cfc)* Enable file upload for journeys
+
+
 ## v0.7.4
 
 ### Features
-- [`7602744`](https://github.com/wangc9/journey-reviewer-backend/commit/7602744eaadd70d0a8548359e58527438028390e)* Add station handler to return the number of pages
+- [`5774ceb`](https://github.com/wangc9/journey-reviewer-backend/commit/5774ceb7fd33c8c635133702ff4ea851c6c02cfc) Add station handler to return the number of pages
 
 
 ## v0.7.3

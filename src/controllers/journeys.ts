@@ -1,7 +1,13 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-lonely-if */
 import express, { Request, Response } from 'express';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import 'express-async-errors';
-import Journey from '../models/journey';
+import multer from 'multer';
+import { parse } from 'papaparse';
+import fs from 'fs';
+import mongoose from 'mongoose';
+import Journey, { IJourney } from '../models/journey';
 import {
   IDuration,
   adjustTime,
@@ -82,6 +88,238 @@ journeysRouter.post('/', async (request: Request, response: Response) => {
     .status(201)
     .json({ journey, updatedUser, newDepart, newDestin });
 });
+
+export interface NJourney {
+  departure: string;
+  endTime: string;
+  departureStationId: number | string;
+  departureStationName: string;
+  returnStationId: number | string;
+  returnStationName: string;
+  coveredDistance: number;
+  duration: number;
+}
+
+const storage = multer.diskStorage({
+  destination: './uploads',
+  filename: (_req, file, callback) => {
+    callback(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
+const isNJourney = (journey: unknown): journey is NJourney =>
+  journey instanceof Object &&
+  !(journey instanceof Array) &&
+  journey !== null &&
+  'departure' in journey &&
+  'endTime' in journey &&
+  'departureStationId' in journey &&
+  'departureStationName' in journey &&
+  'returnStationId' in journey &&
+  'returnStationName' in journey &&
+  'coveredDistance' in journey &&
+  'duration' in journey;
+
+journeysRouter.post(
+  '/file',
+  upload.single('file'),
+  async (request: Request, response: Response) => {
+    const { user, authError } = await checkToken(request, 'add journey');
+    if (authError) {
+      return response.status(401).json({ error: authError });
+    }
+    if (user === undefined) {
+      return response.status(500).json({ error: 'Wrong logic in checkToken' });
+    }
+    const { file } = request;
+    const shortJourneys: Array<IJourney> = [];
+    const addedJourneys: Array<mongoose.Types.ObjectId> = [];
+    let errorMsg = '';
+    let count = 0;
+    const tempJourneys: Array<IJourney> = [];
+    if (file) {
+      const readStream = fs.createReadStream(file.path);
+      parse(readStream, {
+        header: true,
+        skipEmptyLines: true,
+        dynamicTyping: true,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        transformHeader(header, _) {
+          const result = header
+            .replace(/ *\([^)]*\) */g, '')
+            .replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (ltr, idx) =>
+              idx === 0 ? ltr.toLowerCase() : ltr.toUpperCase(),
+            )
+            .replace(/\s+/g, '');
+          if (result === 'return') {
+            return 'endTime';
+          }
+          if (result === 'Departure') {
+            return 'departure';
+          }
+          return result;
+        },
+        step: async (results, parser) => {
+          parser.pause();
+          if (isNJourney(results.data)) {
+            try {
+              count += 1;
+              const {
+                departure,
+                endTime,
+                departureStationId,
+                returnStationId,
+                duration,
+                coveredDistance,
+              } = results.data;
+              const data = {
+                startTime: departure,
+                endTime,
+                departure:
+                  typeof departureStationId === 'string'
+                    ? Number(departureStationId.split('_')[0])
+                    : departureStationId,
+                returnID:
+                  typeof returnStationId === 'string'
+                    ? Number(returnStationId.split('_')[0])
+                    : returnStationId,
+                distance: coveredDistance,
+                duration,
+              };
+              const calculatedDuration = checkDuration({
+                startTime: departure,
+                endTime,
+                duration,
+              });
+              if (calculatedDuration === undefined) {
+                shortJourneys.push({
+                  ...data,
+                  // eslint-disable-next-line no-underscore-dangle
+                  user: user._id,
+                });
+              } else {
+                const found = await Journey.findOne(data);
+                if (found) {
+                  shortJourneys.push({
+                    ...data,
+                    // eslint-disable-next-line no-underscore-dangle
+                    user: user._id,
+                  });
+                } else {
+                  if (count < 2000) {
+                    tempJourneys.push({
+                      ...data,
+                      // eslint-disable-next-line no-underscore-dangle
+                      user: user._id,
+                    });
+                  } else {
+                    const result = await Journey.insertMany(tempJourneys, {
+                      ordered: false,
+                    });
+                    await Promise.all(
+                      result.map(async (journey) => {
+                        const { error } = await updateStation(
+                          journey.departure,
+                          journey.returnID,
+                          // eslint-disable-next-line no-underscore-dangle
+                          journey._id,
+                          user.username,
+                        );
+
+                        if (error) {
+                          errorMsg += `${error}\n`;
+                        } else {
+                          // eslint-disable-next-line no-underscore-dangle
+                          addedJourneys.push(journey._id);
+                        }
+                      }),
+                    );
+                    // console.log('added 2000');
+                    count = 0;
+                    tempJourneys.length = 0;
+                  }
+                  // console.log(count);
+                }
+              }
+            } catch (error) {
+              errorMsg += `${error}\n`;
+            }
+          }
+          parser.resume();
+        },
+        error: (error: unknown) => {
+          if (error instanceof Error)
+            return response
+              .status(500)
+              .json({ condition: 0, message: error.message });
+          return response
+            .status(500)
+            .json({ condition: 0, message: 'unknown error during parsing' });
+        },
+        complete: async () => {
+          try {
+            if (count > 0) {
+              const result = await Journey.insertMany(tempJourneys, {
+                ordered: false,
+              });
+              await Promise.all(
+                result.map(async (journey) => {
+                  const { error } = await updateStation(
+                    journey.departure,
+                    journey.returnID,
+                    // eslint-disable-next-line no-underscore-dangle
+                    journey._id,
+                    user.username,
+                  );
+
+                  if (error) {
+                    errorMsg += `${error}\n`;
+                  } else {
+                    // eslint-disable-next-line no-underscore-dangle
+                    addedJourneys.push(journey._id);
+                  }
+                }),
+              );
+              // console.log('Finished');
+              count = 0;
+              tempJourneys.length = 0;
+            }
+            user.journeys = user.journeys.concat(addedJourneys);
+            await user.save();
+
+            return response.status(201).json({
+              condition: 1,
+              message: `${addedJourneys.length} journeys added.\n ${
+                errorMsg !== '' ? errorMsg : ''
+              }`,
+              disregarded: shortJourneys
+                .map(
+                  (journey) =>
+                    `${journey.startTime}: ${journey.departure} -> ${journey.returnID}`,
+                )
+                .join(',\n'),
+            });
+          } catch (error) {
+            if (error instanceof Error)
+              return response
+                .status(401)
+                .json({ condition: 0, message: error.message });
+            return response.status(500).json({
+              condition: 0,
+              message: 'unknown error when adding documents',
+            });
+          }
+        },
+      });
+    } else {
+      return response
+        .status(500)
+        .json({ condition: 0, message: 'No file detected' });
+    }
+  },
+);
 
 /**
  * receive token from firebase, decode and create new journey, return new journey
