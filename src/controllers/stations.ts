@@ -23,10 +23,18 @@ stationsRouter.get('/', async (_request: Request, response: Response) => {
 stationsRouter.get(
   '/sid/:sid',
   async (request: Request, response: Response) => {
-    const station = await Station.findOne({ SId: request.params.sid });
+    const station = await Station.findOne({ SId: request.params.sid })
+      .populate('journeys.arrive', { distance: 1 })
+      .populate('journeys.depart', { distance: 1 })
+      .populate('departure', { Nimi: 1 });
     response.json({ station });
   },
 );
+
+stationsRouter.get('/id/:id', async (request: Request, response: Response) => {
+  const station = await Station.findById(request.params.id);
+  response.json({ name: station?.Nimi });
+});
 
 /**
  * Return stations using pagination. Each page returns 10 entries of stations.

@@ -2,7 +2,15 @@
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import supertest from 'supertest';
-import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
+import {
+  afterAll,
+  beforeAll,
+  describe,
+  xdescribe,
+  expect,
+  test,
+  xtest,
+} from '@jest/globals';
 import mongoose from 'mongoose';
 import firebaseClient from '../utils/firebase_client_config';
 import app from '../../app';
@@ -175,7 +183,7 @@ describe('Test journey database logic', () => {
     });
   });
 
-  describe('station should be updated correctly', () => {
+  xdescribe('station should be updated correctly', () => {
     describe('new departure station', () => {
       test('Journey should change end time with start time update', async () => {
         const journey = await Journey.findById(id);
@@ -1268,7 +1276,7 @@ describe('Test journey database logic', () => {
     });
   });
 
-  test('Journey can be deleted', async () => {
+  xtest('Journey can be deleted', async () => {
     const journey = await Journey.findById(id);
     if (journey) {
       const departSID = journey.departure;

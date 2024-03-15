@@ -2,10 +2,16 @@
 Note: "*" indicates that the commit link is a placeholder. The corresponding link will be updated in the next commit.
 
 
+## v0.7.6
+
+### Features
+- [`5db5980`](https://github.com/wangc9/journey-reviewer-backend/commit/5db5980c677da034181fb7dc172772fe12a896e0)* Change station handler to populate distance information
+
+
 ## v0.7.5
 
 ### Features
-- [`5774ceb`](https://github.com/wangc9/journey-reviewer-backend/commit/5774ceb7fd33c8c635133702ff4ea851c6c02cfc)* Enable file upload for journeys
+- [`5db5980`](https://github.com/wangc9/journey-reviewer-backend/commit/5db5980c677da034181fb7dc172772fe12a896e0) Enable file upload for journeys
 
 
 ## v0.7.4
